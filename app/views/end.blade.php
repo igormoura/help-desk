@@ -241,6 +241,79 @@
 			});		
 		});
 		
+		$( document ).on('click', '.solsoSave-ticket', function(e){
+			e.preventDefault();
+
+			var form_data = new FormData();                  
+			$.each($('#attachment').prop('files'), function(i) {             
+				 form_data.append('attachment_'+i, $('#attachment').prop('files')[i]); 
+			});
+
+			var solsoSelector	= $(this);
+			var solsoFormAction = solsoSelector.closest('form').attr('action');
+			var solsoFormMethod = solsoSelector.closest('form').attr('method');
+			var solsoFormData	= solsoSelector.closest('form').serialize();	
+			
+			valid = solsoSelector.closest('form').parsley().validate();
+
+			form_data.append('title', $('input[name=title]').val()); 
+			form_data.append('department_id', $('select[name=department_id]').val()); 
+			form_data.append('type_id', $('select[name=type_id]').val()); 
+			form_data.append('priority_id', $('select[name=priority_id]').val()); 
+			form_data.append('content', $('textarea[name=content]').val()); 
+
+			if (valid) {
+				$.ajax({
+					url: 	solsoFormAction,
+					type: 	solsoFormMethod,
+					data: 	form_data,
+					cache: 	false,
+					dataType: 'text',
+					contentType: false,
+					processData: false,
+					success:function(data) {
+						if (data == 0) {
+							$.growl.error({ title: 'ACCESS DENIEND', message: 'ACCESS DENIEND' });
+						} else {
+
+							if ( $(data).closest('table').attr('data-alert') ) {
+								var getError = $(data).closest('table').attr('data-alert');
+							} else if ( $(data).find('.table').attr('data-alert') ) {
+								var getError = $(data).find('.table').attr('data-alert');
+							} else if ( $(data).closest('form').attr('data-alert') ){	
+								var getError = $(data).closest('form').attr('data-alert');
+							} else if ( $(data).closest('form').attr('data-alert') ) {	
+								var getError = $(data).find('form').attr('data-alert');
+							} else {	
+								var getError = 0;
+							}						
+
+							if ( getError == '1' ) {
+								$('#solsoCrudModal').modal('hide');
+								$('#ajaxTable').html(data);
+								$('.span-' + solsoFormAction.split('/').pop()).text( $('.solsoTable').attr('data-all') );
+								$.growl.notice({ title: solsoSelector.attr('data-message-title'), message: solsoSelector.attr('data-message-success') });
+							} else if ( getError == '2' )  {	
+								$.growl.warning({ title: solsoSelector.attr('data-message-title'), message: solsoSelector.attr('data-message-warning') });
+							} else if ( getError == '4' )  {	
+								$('.solsoShowForm').html(data);
+								$('.span-new-ticket').text( $('.newTickets').attr('data-all') );
+								$('.span-new-reply').text( $('.newReplies').attr('data-all') );
+								$.growl.notice({ title: solsoSelector.attr('data-message-title'), message: solsoSelector.attr('data-message-success') });
+							} else {
+								$('.solsoShowForm').html(data);
+								$.growl.error({ title: solsoSelector.attr('data-message-title'), message: solsoSelector.attr('data-message-error') });
+							}
+							
+							$('.solsoTable').dataTable();
+						}
+					}
+				});	
+			}
+			
+			return false;
+		});		
+
 		$( document ).on('click', '.solsoSave', function(e){
 			e.preventDefault();
 

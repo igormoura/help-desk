@@ -5,7 +5,7 @@
 	<h3>{{ trans('translate.guest_ticket') }}</h3>
 
 	<div class="row">
-		{{ Form::open(array('url' => 'website/send-ticket', 'role' => 'form', 'class' => 'validateJSForm top20', 'enctype'=>'multipart/form-data')) }}
+		{{ Form::open(array('url' => 'website/send-ticket', 'role' => 'form', 'class' => 'validateJSForm top20', 'files'=> true)) }}
 
 			<div class="form-group col-md-6">
 				<label for="name">{{ trans('translate.name') }}</label>

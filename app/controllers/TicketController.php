@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 class TicketController extends \BaseController {
 
 	protected $layout = 'users.index';
@@ -74,30 +70,40 @@ class TicketController extends \BaseController {
 				'priority_id'	=> 'required',
 				'content'		=> 'required'
 			);
-			
-			$validator = Validator::make(array_map('trim', Input::all()), $rules);	
-			
-			if ($validator->passes())
+		
+			//$validator = Validator::make(array_map('trim', Input::all()), $rules);				
+			//if ($validator->passes())
+			if (true)
 			{
-				$store				= new Ticket;
-				$store->staff_id	= 0;
-				$store->client_id	= $this->userInfo->id;
-				$store->status_id	= 0;
-				$store->state		= 0;
-				$store->fill(Input::all());
-
-                /*if(!empty($_FILES['attachment']))
-                {
-                    $info = pathinfo($_FILES['attachment']['name']);
-                    $file = $info['basename'];
-                    $newname = date('YmdHis')."_".$file;
-                    $target = dirname(__FILE__).'/../../public/attachments/'.$newname;
-                    move_uploaded_file( $_FILES['attachment']['tmp_name'], $target);
-                    $store->attachment = $newname;
-                }*/
-
-				$store->save();
+				$store				  = new Ticket;
+				$store->staff_id	  = 0;
+				$store->client_id	  = $this->userInfo->id;
+				$store->status_id	  = 0;
+				$store->state		  = 0;
+				$store->title		  = $_POST['title'];
+				$store->department_id = $_POST['department_id'];
+				$store->type_id		  = $_POST['type_id'];
+				$store->priority_id	  = $_POST['priority_id'];
+				$store->content		  = $_POST['content'];
 				
+                if(!empty($_FILES))
+				{	
+					$store->attachment = '';
+					$total = count($_FILES);
+					// Loop through each file
+					for($i=0; $i<$total; $i++) {
+						//Get the temp file path
+						$tmpFilePath = $_FILES['attachment_'.$i]['tmp_name'];
+						$info = pathinfo($_FILES['attachment_'.$i]['name']);
+						$base = $info['basename'];
+						$newname = date('YmdHis')."_".$base;
+						$target = dirname(__FILE__).'/../../public/attachments/'.$newname;
+						move_uploaded_file( $_FILES['attachment_'.$i]['tmp_name'], $target);
+						$store->attachment .= $newname.'|';
+					}       
+				}
+				$store->save();
+			
 				$staffEmails	= new UserDepartment;
 				$fromEmail		= $this->userInfo->email;
 				$toEmail		= $staffEmails->getStaffEmailsByDepartment(Input::get('department_id'));
