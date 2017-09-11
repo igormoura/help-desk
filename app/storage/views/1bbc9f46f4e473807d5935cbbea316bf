@@ -5,14 +5,13 @@
 	<h3><?php echo trans('translate.guest_ticket'); ?></h3>
 
 	<div class="row">
-		<?php echo Form::open(array('url' => 'website/send-ticket', 'role' => 'form', 'class' => 'validateJSForm top20', 'enctype'=>'multipart/form-data')); ?>
+		<?php echo Form::open(array('url' => 'website/send-ticket', 'role' => 'form', 'class' => 'validateJSForm top20', 'files'=> true)); ?>
 
 
 			<div class="form-group col-md-6">
 				<label for="name"><?php echo trans('translate.name'); ?></label>
 				<input type="text" name="name" class="form-control required"
 				autocomplete="off" required autofocus placeholder="<?php echo trans('translate.name'); ?>" value="<?php echo Input::old('name'); ?>">
-
 				<?php echo $errors->first('name', '<p class="error">:messages</p>');?>
 			</div>
 

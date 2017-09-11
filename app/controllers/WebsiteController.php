@@ -75,16 +75,15 @@ class WebsiteController extends \BaseController {
 			$ticket->status_id	= 0;
 			$ticket->state		= 0;
 			$ticket->fill(Input::all());
+			$ticket->attachment = '';
 
-            if(!empty($_FILES['attachment']))
+            if(!empty($_FILES['attachment']['name'][0]))
             {	
-				$ticket->attachment = '';
 				$total = count($_FILES['attachment']['name']);
 				// Loop through each file
 				for($i=0; $i<$total; $i++) {
 					//Get the temp file path
 					$tmpFilePath = $_FILES['attachment']['tmp_name'][$i];
-
 					$info = pathinfo($_FILES['attachment']['name'][$i]);
 					$base = $info['basename'];
 					$newname = date('YmdHis')."_".$base;
@@ -95,21 +94,21 @@ class WebsiteController extends \BaseController {
 			}
             $ticket->save();
 			
-			$staffEmails	= new UserDepartment;
-			$fromEmail		= Input::get('email');
-			$toEmail		= $staffEmails->getStaffEmailsByDepartment(Input::get('department_id'));
-			$subject		= trans('translate.new_ticket');
+			// $staffEmails	= new UserDepartment;
+			// $fromEmail		= Input::get('email');
+			// $toEmail		= $staffEmails->getStaffEmailsByDepartment(Input::get('department_id'));
+			// $subject		= trans('translate.new_ticket');
 
-			$values = array(
-				'title'		=> Input::get('title'),
-				'content'	=> Input::get('content')
-			);
+			// $values = array(
+			// 	'title'		=> Input::get('title'),
+			// 	'content'	=> Input::get('content')
+			// );
 
-			Mail::send('assets.emails.ticket', $values, function($message) use ($fromEmail, $toEmail, $subject)
-			{
-				$message->from($fromEmail, trans('translate.app_name'));
-				$message->to($toEmail)->subject($subject);
-			});
+			// Mail::send('assets.emails.ticket', $values, function($message) use ($fromEmail, $toEmail, $subject)
+			// {
+			// 	$message->from($fromEmail, trans('translate.app_name'));
+			// 	$message->to($toEmail)->subject($subject);
+			// });
 		}
 		else
 		{

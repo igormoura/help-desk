@@ -5,10 +5,10 @@
 
 		<?php echo $errors->first('title', '<p class="error">:messages</p>');?>
 	</div>
-
+	
 	<div class="form-group col-md-6">
 		<label for="attachment"> {{ trans('translate.attachment') }}: </label>
-		<input type="file" multiple name="attachment[]" class="form-control" autocomplete="off" placeholder="{{ trans('translate.attachment') }}">
+		<input type="file" multiple id="attachment" name="attachment[]" class="form-control" autocomplete="off" placeholder="{{ trans('translate.attachment') }}">
 		<?php echo $errors->first('attachment', '<p class="error">:messages</p>');?>
 	</div>
 	
@@ -60,10 +60,9 @@
 	</div>	
 
 	<div class="form-group col-md-12">
-		<button type="button" class="btn btn-success solsoSave" 
+		<button type="submit" class="btn btn-success solsoSave-ticket" 
 		data-message-title="{{ trans('translate.create_notification') }}" data-message-error="{{ trans('translate.validation_error_messages') }}" data-message-success="{{ trans('translate.message_was_sent') }}">
 			<i class="fa fa-share"></i> {{ trans('translate.send') }}
 		</button>
 	</div>
-	
 {{ Form::close() }}
